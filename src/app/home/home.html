@@ -1,0 +1,22 @@
+<br>
+<br>
+<form [formGroup]="profileForm" (ngSubmit)="handleSubmit()">
+  <label>
+    Title
+    <input type="text" formControlName="titulo" placeholder="Escriba un titulo"/>
+  </label>
+  <br>
+  <label>
+    Comment
+    <input type="text" formControlName="comentario" placeholder="Escriba un comentario"/>
+  </label>
+  
+  <button type="submit" [disabled]="!profileForm.valid">Submit</button>
+</form>
+<h2>Profile Form</h2>
+<p>Title: {{ profileForm.value.titulo }}</p>
+<p>Comment: {{ profileForm.value.comentario }}</p>
+
+@for (forum of forums; track $index) {
+    <p>forum</p>
+}
