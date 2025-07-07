@@ -18,5 +18,6 @@
 <p>Comment: {{ profileForm.value.comentario }}</p>
 
 @for (forum of forums; track $index) {
-    <p>forum</p>
+    <p>{{forum.title}}</p>
+    <p>{{forum.body}}</p>
 }
