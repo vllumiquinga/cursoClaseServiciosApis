@@ -9,20 +9,34 @@ import { ForumService } from '../forum.service';
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
-export class Home implements OnInit{
+export class Home implements OnInit {
 
-   forumService = inject(ForumService);
+  forum: forumPost = {
+    userId: 0,
+    id: 0,
+    title: '',
+    body: ''
+  };
+  forums: forumPost[] = [];
+
+  forumService = inject(ForumService);
 
 
   profileForm = new FormGroup({
-    titulo: new FormControl('', [Validators.required, ]),
+    titulo: new FormControl('', [Validators.required,]),
     comentario: new FormControl('', [Validators.required]),
   });
 
+  ngOnInit(): void {
+    this.forumService.getForums().subscribe(data => {
+      this.forums = data;
+      console.log('Forums load:', data);
+    });
+  }
+
+
   handleSubmit() {
     if (this.profileForm.valid) {
-      alert(this.profileForm.value['titulo']!);
-
       this.forum.id = 1;
       this.forum.body = this.profileForm.value['comentario']!;
       this.forum.title = this.profileForm.value['titulo']!;
@@ -32,36 +46,13 @@ export class Home implements OnInit{
         this.forums.unshift(newForum);
         console.log('New forum added:', newForum);
       });
-
- 
-
-
-
     }
   }
 
- 
-  forum:forumPost = {
-    userId:0,
-    id:0,
-    title:'',
-    body:''
-  };
-  forums:forumPost[] = [];
-
-   ngOnInit(): void {
-    this.forumService.getForums().subscribe(data => {
-      this.forums = data;
-      console.log('Forums load:', data);
-    })
 
 
 
-    
-    
 
-
-  }
 
 
 

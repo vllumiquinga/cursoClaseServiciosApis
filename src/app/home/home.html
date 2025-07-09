@@ -13,11 +13,9 @@
   
   <button type="submit" [disabled]="!profileForm.valid">Submit</button>
 </form>
-<h2>Profile Form</h2>
-<p>Title: {{ profileForm.value.titulo }}</p>
-<p>Comment: {{ profileForm.value.comentario }}</p>
+
 
 @for (forum of forums; track $index) {
-    <p>{{forum.title}}</p>
+    <h2>{{forum.id}} .- {{forum.title}}</h2>
     <p>{{forum.body}}</p>
 }
