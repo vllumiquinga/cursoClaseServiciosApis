@@ -1,7 +1,8 @@
 import { Component, inject, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { forumPost } from '../app';
+import { forumPost, User } from '../app';
 import { ForumService } from '../forum.service';
+import { UsuarioService } from '../usuario.service';
 
 @Component({
   selector: 'app-home',
@@ -11,50 +12,86 @@ import { ForumService } from '../forum.service';
 })
 export class Home implements OnInit {
 
-  forum: forumPost = {
-    userId: 0,
+  usuario: User = {
     id: 0,
-    title: '',
-    body: ''
+    name: '',
+    address: '',
+    phone: ''
   };
-  forums: forumPost[] = [];
+  usuarios: User[] = [];
 
-  forumService = inject(ForumService);
+  isReadonly: boolean = true;
+
+  usuarioService = inject(UsuarioService);
 
 
-  profileForm = new FormGroup({
-    titulo: new FormControl('', [Validators.required,]),
-    comentario: new FormControl('', [Validators.required]),
+  userForm = new FormGroup({
+    identificador: new FormControl('', []),
+    nombre: new FormControl('', [Validators.required]),
+    direccion: new FormControl('', [Validators.required]),
+    telefono: new FormControl('', [Validators.required]),
   });
 
+
   ngOnInit(): void {
-    this.forumService.getForums().subscribe(data => {
-      this.forums = data;
-      console.log('Forums load:', data);
-    });
+    this.usuarioService.getAllUsers().subscribe(data => {
+      this.usuarios = data;
+    }
+    );
   }
 
+  userSubmit(): void {
+    if (this.userForm.valid) {
+      this.usuario.name = this.userForm.value.nombre!;
+      this.usuario.address = this.userForm.value.direccion!;
+      this.usuario.phone = this.userForm.value.telefono!;
 
-  handleSubmit() {
-    if (this.profileForm.valid) {
-      this.forum.id = 1;
-      this.forum.body = this.profileForm.value['comentario']!;
-      this.forum.title = this.profileForm.value['titulo']!;
-      this.forum.userId = 1710;
 
-      this.forumService.addForum(this.forum).subscribe(newForum => {
-        this.forums.unshift(newForum);
-        console.log('New forum added:', newForum);
-      });
+      console.log('usuarioid 2:', this.userForm.value.identificador);
+
+      if (Number(this.userForm.value.identificador) == 0) {
+        this.usuarioService.addUser(this.usuario).subscribe(
+          newUser => {
+            this.usuarios.unshift(newUser);
+            this.userForm.reset();
+          }
+        );
+      } else {
+        this.usuario.id = Number(this.userForm.value.identificador);
+        this.usuarioService.updateUser(this.usuario).subscribe(
+          updateUser => {
+
+            this.usuarioService.getAllUsers().subscribe(data => {
+              this.usuarios = data;
+            }
+            );
+            this.userForm.reset();
+          }
+        );
+
+      }
     }
   }
 
+  updateUser(usuarioUpdate: User): void {
+    this.userForm.setValue({
+      identificador: usuarioUpdate.id.toString(),
+      nombre: usuarioUpdate.name,
+      direccion: usuarioUpdate.address,
+      telefono: usuarioUpdate.phone
+    });
 
+  }
 
+  deleteUser(usuarioDelete: User): void {
+    console.log('Borrando: ', usuarioDelete);
 
+    this.usuarioService.deleteUser(usuarioDelete.id).subscribe(data => {
+      this.usuarioService.getAllUsers().subscribe(data => {
+        this.usuarios = data;
+      });
+    });
 
-
-
-
+  }
 
 }

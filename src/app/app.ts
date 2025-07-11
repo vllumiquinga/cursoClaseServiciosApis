@@ -18,3 +18,10 @@ export interface forumPost{
   title:string;
   body:string;
 }
+
+export interface User{
+  id:number;
+  name:string;
+  address:string;
+  phone:string;
+}

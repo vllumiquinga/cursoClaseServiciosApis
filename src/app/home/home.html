@@ -1,21 +1,36 @@
 <br>
 <br>
-<form [formGroup]="profileForm" (ngSubmit)="handleSubmit()">
+
+<form [formGroup]="userForm" (ngSubmit)="userSubmit()">
   <label>
-    Title
-    <input type="text" formControlName="titulo" placeholder="Escriba un titulo"/>
+    ID
+    <input type="text" formControlName="identificador" [disabled]="isReadonly"/>
   </label>
   <br>
   <label>
-    Comment
-    <input type="text" formControlName="comentario" placeholder="Escriba un comentario"/>
+    NOMBRE
+    <input type="text" formControlName="nombre" placeholder="Escriba un Nombre" />
   </label>
-  
-  <button type="submit" [disabled]="!profileForm.valid">Submit</button>
+  <br>
+  <label>
+    DIRECCION
+    <input type="text" formControlName="direccion" placeholder="Escriba una Direccion" />
+  </label>
+  <br>
+  <label>
+    TELEFONO
+    <input type="text" formControlName="telefono" placeholder="Escriba un Telefono" />
+  </label>
+  <br>
+  <button type="submit" [disabled]="!userForm.valid">Submit</button>
+
 </form>
-
-
-@for (forum of forums; track $index) {
-    <h2>{{forum.id}} .- {{forum.title}}</h2>
-    <p>{{forum.body}}</p>
+<div>
+@for (usuario of usuarios; track $index) {
+<div>
+  {{usuario.id}} - {{usuario.name}} - {{usuario.address}}
+  <button (click)='updateUser(usuario)'>Actualizar</button>
+  <button (click)='deleteUser(usuario)'>Eliminar</button>
+</div>
 }
+</div>
