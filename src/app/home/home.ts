@@ -34,6 +34,7 @@ export class Home implements OnInit {
 
 
   ngOnInit(): void {
+    this.userForm.controls.identificador.disable();
     this.usuarioService.getAllUsers().subscribe(data => {
       this.usuarios = data;
     }
@@ -47,9 +48,10 @@ export class Home implements OnInit {
       this.usuario.phone = this.userForm.value.telefono!;
 
 
-      console.log('usuarioid 2:', this.userForm.value.identificador);
+      console.log('usuarioid 2:', this.userForm.controls.identificador.getRawValue());
+      console.log('usuarioid 2:', !this.userForm.controls.identificador.getRawValue());
 
-      if (Number(this.userForm.value.identificador) == 0) {
+      if (!this.userForm.controls.identificador.getRawValue()) {
         this.usuarioService.addUser(this.usuario).subscribe(
           newUser => {
             this.usuarios.unshift(newUser);
@@ -57,7 +59,7 @@ export class Home implements OnInit {
           }
         );
       } else {
-        this.usuario.id = Number(this.userForm.value.identificador);
+        this.usuario.id = Number(this.userForm.controls.identificador.getRawValue());
         this.usuarioService.updateUser(this.usuario).subscribe(
           updateUser => {
 
@@ -84,14 +86,15 @@ export class Home implements OnInit {
   }
 
   deleteUser(usuarioDelete: User): void {
-    console.log('Borrando: ', usuarioDelete);
-
-    this.usuarioService.deleteUser(usuarioDelete.id).subscribe(data => {
-      this.usuarioService.getAllUsers().subscribe(data => {
-        this.usuarios = data;
+    if (confirm("Are you sure to delete " + usuarioDelete.name)){
+      this.usuarioService.deleteUser(usuarioDelete.id).subscribe(data => {
+        this.usuarioService.getAllUsers().subscribe(data => {
+          this.usuarios = data;
+        });
       });
-    });
-
+    } else {
+      console.log('Usuario no booradp');
+    }
   }
 
 }
